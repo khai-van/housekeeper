@@ -25,12 +25,13 @@ type SendJobRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	JobId          string   `protobuf:"bytes,1,opt,name=jobId,proto3" json:"jobId,omitempty"`
-	JobDescription string   `protobuf:"bytes,2,opt,name=jobDescription,proto3" json:"jobDescription,omitempty"`
-	JobAddress     string   `protobuf:"bytes,3,opt,name=jobAddress,proto3" json:"jobAddress,omitempty"`
-	StartDate      uint64   `protobuf:"varint,4,opt,name=startDate,proto3" json:"startDate,omitempty"`       // in timestamp
-	RequiredHour   uint32   `protobuf:"varint,5,opt,name=requiredHour,proto3" json:"requiredHour,omitempty"` // number of hour for the service
-	EmployeeId     []string `protobuf:"bytes,6,rep,name=employeeId,proto3" json:"employeeId,omitempty"`      // id of specific employee to receive job
+	JobId          string `protobuf:"bytes,1,opt,name=jobId,proto3" json:"jobId,omitempty"`
+	JobDescription string `protobuf:"bytes,2,opt,name=jobDescription,proto3" json:"jobDescription,omitempty"`
+	// request for query availble employee
+	JobAddress   string   `protobuf:"bytes,3,opt,name=jobAddress,proto3" json:"jobAddress,omitempty"`
+	StartDate    uint64   `protobuf:"varint,4,opt,name=startDate,proto3" json:"startDate,omitempty"`       // in timestamp
+	RequiredHour uint32   `protobuf:"varint,5,opt,name=requiredHour,proto3" json:"requiredHour,omitempty"` // number of hour for the service
+	EmployeeId   []string `protobuf:"bytes,6,rep,name=employeeId,proto3" json:"employeeId,omitempty"`      // id of specific employee to receive job
 }
 
 func (x *SendJobRequest) Reset() {
