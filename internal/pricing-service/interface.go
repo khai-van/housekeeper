@@ -6,5 +6,5 @@ import (
 )
 
 type PricingCalculator interface {
-	CalculatePrice(ctx context.Context, input model.JobRequire) (*model.JobPrice, error)
+	CalculatePrice(context.Context, model.JobRequire) (*model.JobPrice, error)
 }

@@ -3,3 +3,21 @@ syntax = "proto3";
 package send;
 
 option go_package = "./send";
+
+service SendService {
+    rpc SendJob(SendJobRequest) returns (SendJobResponse) {}
+}
+
+message SendJobRequest {
+    string jobId = 1;
+    string jobDescription = 2;
+    
+    // request for query availble employee
+    string jobAddress = 3;
+    uint64 startDate = 4; // in timestamp
+    uint32 requiredHour = 5; // number of hour for the service
+    repeated string employeeId = 6; // id of specific employee to receive job 
+}
+
+message SendJobResponse {
+}

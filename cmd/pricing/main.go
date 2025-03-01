@@ -7,7 +7,9 @@ import (
 	"log"
 	"net"
 	"os"
+	"os/signal"
 	"strconv"
+	"syscall"
 
 	"google.golang.org/grpc"
 )
@@ -41,6 +43,20 @@ func main() {
 
 	grpcServer := grpc.NewServer()
 	pricing.RegisterPricingServiceServer(grpcServer, s)
+
+	// Graceful shutdown
+	signalChan := make(chan os.Signal, 1)
+	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
+
+	go func() {
+		sig := <-signalChan
+		log.Printf("Received signal: %v", sig)
+		log.Println("Shutting down gRPC server...")
+		grpcServer.GracefulStop()
+		log.Println("Closing Pricing Service resources...")
+		log.Println("Shutdown complete.")
+		os.Exit(0)
+	}()
 
 	// start server
 	log.Printf("----Pricing service start on %v----", lis.Addr())

@@ -2,6 +2,7 @@ package rabbitmqx
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"time"
@@ -49,27 +50,32 @@ func NewRabbitMQClient(url string, queue string) (*RabbitMQClient, error) {
 	}, nil
 }
 
-func (r *RabbitMQClient) Publish(ctx context.Context, message string) error {
+func (r *RabbitMQClient) Publish(ctx context.Context, data any) error {
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	err := r.channel.PublishWithContext(ctx,
+	b, err := json.Marshal(data)
+	if err != nil {
+		return fmt.Errorf("marshal json data err: %w", err)
+	}
+
+	err = r.channel.PublishWithContext(ctx,
 		"",
 		r.queueName,
 		false,
 		false,
 		amqp.Publishing{
-			ContentType: "text/plain",
-			Body:        []byte(message),
+			ContentType: "application/json",
+			Body:        b,
 		})
 	if err != nil {
 		return fmt.Errorf("failed to publish a message: %w", err)
 	}
-	log.Printf(" [x] Sent %s\n", message)
+
 	return nil
 }
 
-func (r *RabbitMQClient) Consume(ctx context.Context, handler func(string) error) error {
+func (r *RabbitMQClient) Consume(handler func([]byte) error) error {
 	msgs, err := r.channel.Consume(
 		r.queueName,
 		"",
@@ -86,7 +92,7 @@ func (r *RabbitMQClient) Consume(ctx context.Context, handler func(string) error
 	go func() {
 		for d := range msgs {
 			log.Printf("Received a message: %s", d.Body)
-			err := handler(string(d.Body))
+			err := handler(d.Body)
 			if err != nil {
 				log.Printf("Error processing message: %v", err)
 			}
