@@ -1,24 +1,36 @@
 package utils
 
 import (
-	"fmt"
-	"os"
+	"path/filepath"
+	"strings"
 
-	"gopkg.in/yaml.v3"
+	"github.com/spf13/viper"
 )
 
+// Load config by file yaml and also parse env variable to that config file
 func LoadConfig[T any](filename string) (*T, error) {
-	f, err := os.Open(filename)
+	confPath, err := filepath.Abs("./config")
 	if err != nil {
-		return nil, fmt.Errorf("failed to open config file: %w", err)
+		return nil, err
 	}
-	defer f.Close()
 
-	var cfg T
-	decoder := yaml.NewDecoder(f)
-	err = decoder.Decode(&cfg)
-	if err != nil {
-		return nil, fmt.Errorf("failed to decode config file: %w", err)
+	var config T
+
+	viper.SetConfigName(filename)                          // set file name config
+	viper.SetConfigType("yaml")                            // set file config type
+	viper.AddConfigPath(confPath)                          // set path to config
+	viper.SetEnvPrefix("")                                 // no need prefix in env
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_")) // child and parent field in the config parse to env separate by _
+	viper.AutomaticEnv()
+
+	if err := viper.ReadInConfig(); err != nil {
+		return nil, err
 	}
-	return &cfg, nil
+
+	err = viper.Unmarshal(&config)
+	if err != nil {
+		return nil, err
+	}
+
+	return &config, nil
 }

@@ -1,6 +1,6 @@
 package config
 
 type Config struct {
-	RabbitMQURL   string `yaml:"rabbitmq_url"`
-	RabbitMQQueue string `yaml:"rabbitmq_queue"`
+	RabbitMQURL   string `mapstructure:"rabbitmqUrl"`
+	RabbitMQQueue string `mapstructure:"rabbitmqQueue"`
 }

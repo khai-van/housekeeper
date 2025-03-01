@@ -1,4 +1,11 @@
 services:
+  rabbitmq:
+    image: rabbitmq
+    ports:
+      - "5672:5672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
   pricing-service:
     build:
       context: .
@@ -7,3 +14,26 @@ services:
       - "8081:8081"
     environment:
       PRICING_PORT: 8081
+  send-service:
+    build:
+      context: .
+      dockerfile: cmd/send/Dockerfile
+    environment:
+      RABBITMQURL: amqp://guest:guest@rabbitmq:5672/
+      RABBITMQQUEUE: job_queue
+    depends_on:
+      - rabbitmq
+    restart: on-failure
+
+  send-worker:
+    build:
+      context: .
+      dockerfile: cmd/send-worker/Dockerfile
+    environment:
+      RABBITMQURL: amqp://guest:guest@rabbitmq:5672/
+      RABBITMQQUEUE: job_queue
+    depends_on:
+      - rabbitmq
+    deploy:
+      replicas: 3
+    restart: on-failure

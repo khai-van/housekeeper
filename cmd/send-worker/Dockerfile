@@ -7,12 +7,13 @@ RUN go mod download
 COPY . .
 
 RUN --mount=type=bind,target=. \
-    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /bin/service ./cmd/pricing
+    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /bin/service ./cmd/send-worker
 
 # --- Final Image ---
 FROM gcr.io/distroless/static
 
 WORKDIR /go/bin
+COPY ./cmd/send-worker/config/ ./config/
 COPY --from=builder /bin/service .
 
 ENTRYPOINT ["./service"]

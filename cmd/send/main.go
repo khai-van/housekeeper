@@ -18,7 +18,7 @@ func main() {
 	// config initial
 	configFile := os.Getenv("SEND_CONFIG_FILE") // e.g., "config.yaml"
 	if configFile == "" {
-		configFile = "config/config.yaml" // Default config file
+		configFile = "config.yaml" // Default config file
 	}
 
 	cfg, err := utils.LoadConfig[Config](configFile)

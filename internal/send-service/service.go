@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"housekeeper/api/send"
 	"housekeeper/internal/send-service/config"
+	"housekeeper/internal/send-service/mock"
 	"housekeeper/internal/send-service/model"
 	"housekeeper/pkg/rabbitmqx"
 	"log"
@@ -25,29 +26,9 @@ func NewSendServiceServer(cfg *config.Config) (*SendServiceServer, error) {
 		return nil, fmt.Errorf("failed to create RabbitMQ client: %w", err)
 	}
 
-	// dispatcher := dispatch.NewHousekeeperDispatcher()
-	// //Create a worker to consume from queue and dispatch job.
-	// go func() {
-	// 	ctx := context.Background()
-	// 	err = rabbitmqClient.Consume(ctx, func(message string) error {
-	// 		log.Printf("Consuming message from queue: %s", message)
-	// 		return dispatcher.DispatchJob(ctx, message) // Dispatch the job
-	// 	})
-	// 	if err != nil {
-	// 		log.Printf("Error on Consumer: %s", err)
-	// 	}
-	// }()
-	// Start the dispatch workers using channels if u wish to dispatch through channels.
-	/*
-		jobChan := make(chan string) // Unbuffered channel for job IDs
-		for i := 0; i < cfg.NumWorkers; i++ {
-			worker := dispatch.NewDispatchWorker(i+1, jobChan, dispatcher)
-			go worker.Start()
-		}
-	*/
-
 	return &SendServiceServer{
 		rabbitmqClient: rabbitmqClient,
+		employeeSvc:    mock.NewMockEmployeeService(),
 	}, nil
 }
 

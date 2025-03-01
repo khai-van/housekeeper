@@ -13,7 +13,7 @@ import (
 func main() {
 	configFile := os.Getenv("SEND_WORKER_CONFIG_FILE") // e.g., "config.yaml"
 	if configFile == "" {
-		configFile = "config/config.yaml" // Default config file
+		configFile = "config.yaml" // Default config file
 	}
 
 	cfg, err := utils.LoadConfig[config.Config](configFile)
