@@ -9,20 +9,19 @@ import (
 	"log"
 )
 
-type PricingServiceServer struct {
-	pricing.UnimplementedPricingServiceServer
+type PricingService struct {
 	calculator PricingCalculator
 }
 
-func NewPricingServiceServer() (*PricingServiceServer, error) {
+func NewPricingService() (*PricingService, error) {
 	calculator, err := calculator.NewPricingCalculator(calculator.GetConfig())
 	if err != nil {
 		return nil, fmt.Errorf("create calculator: %w", err)
 	}
-	return &PricingServiceServer{calculator: calculator}, nil
+	return &PricingService{calculator: calculator}, nil
 }
 
-func (s *PricingServiceServer) GetPrice(ctx context.Context, req *pricing.GetPriceRequest) (*pricing.GetPriceResponse, error) {
+func (s *PricingService) GetPrice(ctx context.Context, req *pricing.GetPriceRequest) (*pricing.GetPriceResponse, error) {
 	price, err := s.calculator.CalculatePrice(ctx, model.JobRequire{
 		StartDate:    req.StartDate,
 		RequiredHour: int32(req.RequiredHour),

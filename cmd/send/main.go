@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"housekeeper/api/send"
-	sendservice "housekeeper/internal/send-service"
+	"housekeeper/internal/send-service/controller"
 	"housekeeper/pkg/utils"
 	"log"
 	"net"
@@ -32,7 +32,7 @@ func main() {
 		log.Fatalf("Failed to listen: %v", err)
 	}
 
-	s, err := sendservice.NewSendServiceServer(&cfg.Config)
+	s, err := controller.NewSendServer(&cfg.Config)
 	if err != nil {
 		log.Fatalf("Failed to create send API service server: %v", err)
 	}

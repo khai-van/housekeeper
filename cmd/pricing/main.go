@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"housekeeper/api/pricing"
-	pricingservice "housekeeper/internal/pricing-service"
+	"housekeeper/internal/pricing-service/controller"
 	"log"
 	"net"
 	"os"
@@ -36,7 +36,7 @@ func main() {
 	}
 
 	// init service
-	s, err := pricingservice.NewPricingServiceServer()
+	s, err := controller.NewPricingServer()
 	if err != nil {
 		log.Fatalf("Failed to create pricing service server: %v", err)
 	}

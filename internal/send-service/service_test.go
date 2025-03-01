@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 	"housekeeper/api/send"
-	sendservice "housekeeper/internal/send-service"
 	"housekeeper/internal/send-service/config"
+	"housekeeper/internal/send-service/controller"
 	"housekeeper/internal/send-service/worker"
 	"housekeeper/pkg/rabbitmqx"
 	"log"
@@ -26,7 +26,7 @@ const (
 )
 
 var (
-	s             *sendservice.SendServiceServer
+	s             *controller.SendServer
 	w             *sendWorker // New
 	rabbitMQURL   = "amqp://guest:guest@localhost:5672/"
 	rabbitMQQueue = "test_job_queue"
@@ -49,7 +49,7 @@ func setup() {
 		RabbitMQURL:   rabbitMQURL,
 		RabbitMQQueue: rabbitMQQueue,
 	}
-	s, err = sendservice.NewSendServiceServer(cfg) // Create the  service
+	s, err = controller.NewSendServer(cfg) // Create the  service
 	if err != nil {
 		log.Fatalf("Failed to create SendAPIServiceServer: %v", err)
 	}
@@ -128,5 +128,4 @@ func TestSendJobIntegration(t *testing.T) {
 
 	// Give the worker some time to process the message
 	time.Sleep(5 * time.Second)
-
 }

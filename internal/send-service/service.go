@@ -4,36 +4,32 @@ import (
 	"context"
 	"fmt"
 	"housekeeper/api/send"
-	"housekeeper/internal/send-service/config"
-	"housekeeper/internal/send-service/mock"
 	"housekeeper/internal/send-service/model"
 	"housekeeper/pkg/rabbitmqx"
 	"log"
 	"time"
 )
 
-type SendServiceServer struct {
-	send.UnimplementedSendServiceServer
+type SendService struct {
 	rabbitmqClient *rabbitmqx.RabbitMQClient
 
 	employeeSvc EmployeeService
 }
 
-// NewSendServiceServer creates a new SendServiceServer
-func NewSendServiceServer(cfg *config.Config) (*SendServiceServer, error) {
-	rabbitmqClient, err := rabbitmqx.NewRabbitMQClient(cfg.RabbitMQURL, cfg.RabbitMQQueue)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create RabbitMQ client: %w", err)
-	}
+// NewSendService creates a new SendServiceServer
+func NewSendService(
+	rabbitmqClient *rabbitmqx.RabbitMQClient,
+	employeeSvc EmployeeService,
+) (*SendService, error) {
 
-	return &SendServiceServer{
+	return &SendService{
 		rabbitmqClient: rabbitmqClient,
-		employeeSvc:    mock.NewMockEmployeeService(), // TODO: mock employee service for integration, complete it later
+		employeeSvc:    employeeSvc,
 	}, nil
 }
 
 // SendJob receives a job ID and sends it to the dispatch workers
-func (s *SendServiceServer) SendJob(ctx context.Context, req *send.SendJobRequest) (*send.SendJobResponse, error) {
+func (s *SendService) SendJob(ctx context.Context, req *send.SendJobRequest) (*send.SendJobResponse, error) {
 	var listEmployeeInfo []model.EmployeeInfo
 	var err error
 	if len(req.EmployeeId) > 0 { // get specific data employee from specific id
@@ -58,7 +54,7 @@ func (s *SendServiceServer) SendJob(ctx context.Context, req *send.SendJobReques
 	return &send.SendJobResponse{}, nil
 }
 
-func (s *SendServiceServer) pushToWorker(listEmployeeInfo []model.EmployeeInfo, req *send.SendJobRequest) {
+func (s *SendService) pushToWorker(listEmployeeInfo []model.EmployeeInfo, req *send.SendJobRequest) {
 	pCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -74,12 +70,5 @@ func (s *SendServiceServer) pushToWorker(listEmployeeInfo []model.EmployeeInfo, 
 		if err != nil {
 			log.Println("failed to publish job to RabbitMQ: %w", err)
 		}
-	}
-}
-
-// Close closes the RabbitMQ connection when the service is shut down
-func (s *SendServiceServer) Close() {
-	if s.rabbitmqClient != nil {
-		s.rabbitmqClient.Close()
 	}
 }
