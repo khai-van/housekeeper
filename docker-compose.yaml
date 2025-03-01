@@ -1,4 +1,10 @@
 services:
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
   rabbitmq:
     image: rabbitmq
     ports:
@@ -6,6 +12,24 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
+
+  # service
+  booking-service:
+    build:
+      context: .
+      dockerfile: cmd/booking/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      MONGODBURI: mongodb://mongo:27017
+      MONGODBNAME: housekeeper
+      PRICINGSERVICEADDRESS: pricing-service:8081
+      SENDSERVICEADDRESS: send-service:8082
+    depends_on:
+      - mongo
+      - pricing-service
+      - send-service # Depends on the API, not the worker
+    restart: on-failure
   pricing-service:
     build:
       context: .
@@ -18,6 +42,8 @@ services:
     build:
       context: .
       dockerfile: cmd/send/Dockerfile
+    ports:
+      - "8082:8082"
     environment:
       RABBITMQURL: amqp://guest:guest@rabbitmq:5672/
       RABBITMQQUEUE: job_queue
@@ -35,5 +61,7 @@ services:
     depends_on:
       - rabbitmq
     deploy:
-      replicas: 3
+      replicas: 2
     restart: on-failure
+volumes:
+  mongo-data:

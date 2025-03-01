@@ -1,0 +1,5 @@
+port: 8080
+mongodbUri: "mongodb://localhost:27017"
+mongodbName: "housekeeper"
+pricingServiceAddress: "localhost:8081"
+sendServiceAddress: "localhost:8082"

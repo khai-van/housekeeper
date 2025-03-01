@@ -1,2 +1,2 @@
-rabbitmqUrl: ""
+rabbitmqUrl: "amqp://guest:guest@localhost:5672/"
 rabbitmqQueue: "send_job"
