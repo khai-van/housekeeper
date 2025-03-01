@@ -16,7 +16,7 @@ service PricingService {
 }
 
 message GetPriceRequest {
-    uint64 startDate = 1; // timestamp
+    uint64 startDate = 1; // in timestamp
     uint32 requiredHour = 2; // number of hour for the service
 }
 
