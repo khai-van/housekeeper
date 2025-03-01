@@ -1,8 +1,8 @@
-package pricing
+package pricingservice
 
 import (
 	"context"
-	"housekeeper/internal/pricing/model"
+	"housekeeper/internal/pricing-service/model"
 )
 
 type PricingCalculator interface {

@@ -1,0 +1,9 @@
+services:
+  pricing-service:
+    build:
+      context: .
+      dockerfile: cmd/pricing/Dockerfile
+    ports:
+      - "8081:8081"
+    environment:
+      PRICING_PORT: 8081

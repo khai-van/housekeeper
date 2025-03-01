@@ -3,8 +3,8 @@ package calculator_test
 import (
 	"context"
 	"housekeeper/api/pricing"
-	"housekeeper/internal/pricing/calculator"
-	"housekeeper/internal/pricing/model"
+	"housekeeper/internal/pricing-service/calculator"
+	"housekeeper/internal/pricing-service/model"
 	"reflect"
 	"testing"
 	"time"

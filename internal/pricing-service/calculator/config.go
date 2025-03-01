@@ -2,7 +2,7 @@ package calculator
 
 import (
 	"housekeeper/api/pricing"
-	"housekeeper/internal/pricing/model"
+	"housekeeper/internal/pricing-service/model"
 )
 
 type Config struct {

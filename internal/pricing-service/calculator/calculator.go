@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"housekeeper/api/pricing"
-	"housekeeper/internal/pricing/model"
+	"housekeeper/internal/pricing-service/model"
 	"housekeeper/pkg/utils"
 	"time"
 )
