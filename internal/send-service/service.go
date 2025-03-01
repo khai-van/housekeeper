@@ -28,7 +28,7 @@ func NewSendServiceServer(cfg *config.Config) (*SendServiceServer, error) {
 
 	return &SendServiceServer{
 		rabbitmqClient: rabbitmqClient,
-		employeeSvc:    mock.NewMockEmployeeService(),
+		employeeSvc:    mock.NewMockEmployeeService(), // TODO: mock employee service for integration, complete it later
 	}, nil
 }
 
