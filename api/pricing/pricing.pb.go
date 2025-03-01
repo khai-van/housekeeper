@@ -71,7 +71,7 @@ type GetPriceRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	StartDate    uint64 `protobuf:"varint,1,opt,name=startDate,proto3" json:"startDate,omitempty"`       // timestamp
+	StartDate    uint64 `protobuf:"varint,1,opt,name=startDate,proto3" json:"startDate,omitempty"`       // in timestamp
 	RequiredHour uint32 `protobuf:"varint,2,opt,name=requiredHour,proto3" json:"requiredHour,omitempty"` // number of hour for the service
 }
 
