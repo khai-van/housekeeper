@@ -3,3 +3,30 @@ syntax = "proto3";
 package pricing;
 
 option go_package = "./pricing";
+
+enum Currency {
+    VND = 0;
+    USD = 1;
+    // extend currency type below
+
+}
+
+service PricingService {
+    rpc GetPrice(GetPriceRequest) returns (GetPriceResponse) {}
+}
+
+message GetPriceRequest {
+    uint64 startDate = 1; // timestamp
+    uint32 requiredHour = 2; // number of hour for the service
+}
+
+message CurrencyValue {
+    int64 value = 1;
+    int32 decimal = 2; 
+}
+
+
+message GetPriceResponse {
+    CurrencyValue price = 1; // Price as a decimal
+    Currency currency = 2;  // Currency type
+} 

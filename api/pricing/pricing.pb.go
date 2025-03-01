@@ -10,6 +10,7 @@ import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
+	sync "sync"
 )
 
 const (
@@ -19,21 +20,279 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type Currency int32
+
+const (
+	Currency_VND Currency = 0
+	Currency_USD Currency = 1 // extend currency type below
+)
+
+// Enum value maps for Currency.
+var (
+	Currency_name = map[int32]string{
+		0: "VND",
+		1: "USD",
+	}
+	Currency_value = map[string]int32{
+		"VND": 0,
+		"USD": 1,
+	}
+)
+
+func (x Currency) Enum() *Currency {
+	p := new(Currency)
+	*p = x
+	return p
+}
+
+func (x Currency) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (Currency) Descriptor() protoreflect.EnumDescriptor {
+	return file_pricing_proto_enumTypes[0].Descriptor()
+}
+
+func (Currency) Type() protoreflect.EnumType {
+	return &file_pricing_proto_enumTypes[0]
+}
+
+func (x Currency) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use Currency.Descriptor instead.
+func (Currency) EnumDescriptor() ([]byte, []int) {
+	return file_pricing_proto_rawDescGZIP(), []int{0}
+}
+
+type GetPriceRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	StartDate    uint64 `protobuf:"varint,1,opt,name=startDate,proto3" json:"startDate,omitempty"`       // timestamp
+	RequiredHour uint32 `protobuf:"varint,2,opt,name=requiredHour,proto3" json:"requiredHour,omitempty"` // number of hour for the service
+}
+
+func (x *GetPriceRequest) Reset() {
+	*x = GetPriceRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_pricing_proto_msgTypes[0]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetPriceRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetPriceRequest) ProtoMessage() {}
+
+func (x *GetPriceRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_pricing_proto_msgTypes[0]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetPriceRequest.ProtoReflect.Descriptor instead.
+func (*GetPriceRequest) Descriptor() ([]byte, []int) {
+	return file_pricing_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *GetPriceRequest) GetStartDate() uint64 {
+	if x != nil {
+		return x.StartDate
+	}
+	return 0
+}
+
+func (x *GetPriceRequest) GetRequiredHour() uint32 {
+	if x != nil {
+		return x.RequiredHour
+	}
+	return 0
+}
+
+type CurrencyValue struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Value   int64 `protobuf:"varint,1,opt,name=value,proto3" json:"value,omitempty"`
+	Decimal int32 `protobuf:"varint,2,opt,name=decimal,proto3" json:"decimal,omitempty"`
+}
+
+func (x *CurrencyValue) Reset() {
+	*x = CurrencyValue{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_pricing_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CurrencyValue) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CurrencyValue) ProtoMessage() {}
+
+func (x *CurrencyValue) ProtoReflect() protoreflect.Message {
+	mi := &file_pricing_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CurrencyValue.ProtoReflect.Descriptor instead.
+func (*CurrencyValue) Descriptor() ([]byte, []int) {
+	return file_pricing_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *CurrencyValue) GetValue() int64 {
+	if x != nil {
+		return x.Value
+	}
+	return 0
+}
+
+func (x *CurrencyValue) GetDecimal() int32 {
+	if x != nil {
+		return x.Decimal
+	}
+	return 0
+}
+
+type GetPriceResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Price    *CurrencyValue `protobuf:"bytes,1,opt,name=price,proto3" json:"price,omitempty"`                              // Price as a decimal
+	Currency Currency       `protobuf:"varint,2,opt,name=currency,proto3,enum=pricing.Currency" json:"currency,omitempty"` // Currency type
+}
+
+func (x *GetPriceResponse) Reset() {
+	*x = GetPriceResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_pricing_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetPriceResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetPriceResponse) ProtoMessage() {}
+
+func (x *GetPriceResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_pricing_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetPriceResponse.ProtoReflect.Descriptor instead.
+func (*GetPriceResponse) Descriptor() ([]byte, []int) {
+	return file_pricing_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *GetPriceResponse) GetPrice() *CurrencyValue {
+	if x != nil {
+		return x.Price
+	}
+	return nil
+}
+
+func (x *GetPriceResponse) GetCurrency() Currency {
+	if x != nil {
+		return x.Currency
+	}
+	return Currency_VND
+}
+
 var File_pricing_proto protoreflect.FileDescriptor
 
 var file_pricing_proto_rawDesc = []byte{
 	0x0a, 0x0d, 0x70, 0x72, 0x69, 0x63, 0x69, 0x6e, 0x67, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12,
-	0x07, 0x70, 0x72, 0x69, 0x63, 0x69, 0x6e, 0x67, 0x42, 0x0b, 0x5a, 0x09, 0x2e, 0x2f, 0x70, 0x72,
-	0x69, 0x63, 0x69, 0x6e, 0x67, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x07, 0x70, 0x72, 0x69, 0x63, 0x69, 0x6e, 0x67, 0x22, 0x53, 0x0a, 0x0f, 0x47, 0x65, 0x74, 0x50,
+	0x72, 0x69, 0x63, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1c, 0x0a, 0x09, 0x73,
+	0x74, 0x61, 0x72, 0x74, 0x44, 0x61, 0x74, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x09,
+	0x73, 0x74, 0x61, 0x72, 0x74, 0x44, 0x61, 0x74, 0x65, 0x12, 0x22, 0x0a, 0x0c, 0x72, 0x65, 0x71,
+	0x75, 0x69, 0x72, 0x65, 0x64, 0x48, 0x6f, 0x75, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0d, 0x52,
+	0x0c, 0x72, 0x65, 0x71, 0x75, 0x69, 0x72, 0x65, 0x64, 0x48, 0x6f, 0x75, 0x72, 0x22, 0x3f, 0x0a,
+	0x0d, 0x43, 0x75, 0x72, 0x72, 0x65, 0x6e, 0x63, 0x79, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x12, 0x14,
+	0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x76,
+	0x61, 0x6c, 0x75, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x64, 0x65, 0x63, 0x69, 0x6d, 0x61, 0x6c, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x05, 0x52, 0x07, 0x64, 0x65, 0x63, 0x69, 0x6d, 0x61, 0x6c, 0x22, 0x6f,
+	0x0a, 0x10, 0x47, 0x65, 0x74, 0x50, 0x72, 0x69, 0x63, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x12, 0x2c, 0x0a, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x0b, 0x32, 0x16, 0x2e, 0x70, 0x72, 0x69, 0x63, 0x69, 0x6e, 0x67, 0x2e, 0x43, 0x75, 0x72, 0x72,
+	0x65, 0x6e, 0x63, 0x79, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x52, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65,
+	0x12, 0x2d, 0x0a, 0x08, 0x63, 0x75, 0x72, 0x72, 0x65, 0x6e, 0x63, 0x79, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x0e, 0x32, 0x11, 0x2e, 0x70, 0x72, 0x69, 0x63, 0x69, 0x6e, 0x67, 0x2e, 0x43, 0x75, 0x72,
+	0x72, 0x65, 0x6e, 0x63, 0x79, 0x52, 0x08, 0x63, 0x75, 0x72, 0x72, 0x65, 0x6e, 0x63, 0x79, 0x2a,
+	0x1c, 0x0a, 0x08, 0x43, 0x75, 0x72, 0x72, 0x65, 0x6e, 0x63, 0x79, 0x12, 0x07, 0x0a, 0x03, 0x56,
+	0x4e, 0x44, 0x10, 0x00, 0x12, 0x07, 0x0a, 0x03, 0x55, 0x53, 0x44, 0x10, 0x01, 0x32, 0x53, 0x0a,
+	0x0e, 0x50, 0x72, 0x69, 0x63, 0x69, 0x6e, 0x67, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12,
+	0x41, 0x0a, 0x08, 0x47, 0x65, 0x74, 0x50, 0x72, 0x69, 0x63, 0x65, 0x12, 0x18, 0x2e, 0x70, 0x72,
+	0x69, 0x63, 0x69, 0x6e, 0x67, 0x2e, 0x47, 0x65, 0x74, 0x50, 0x72, 0x69, 0x63, 0x65, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x19, 0x2e, 0x70, 0x72, 0x69, 0x63, 0x69, 0x6e, 0x67, 0x2e,
+	0x47, 0x65, 0x74, 0x50, 0x72, 0x69, 0x63, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x22, 0x00, 0x42, 0x0b, 0x5a, 0x09, 0x2e, 0x2f, 0x70, 0x72, 0x69, 0x63, 0x69, 0x6e, 0x67, 0x62,
+	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
-var file_pricing_proto_goTypes = []interface{}{}
+var (
+	file_pricing_proto_rawDescOnce sync.Once
+	file_pricing_proto_rawDescData = file_pricing_proto_rawDesc
+)
+
+func file_pricing_proto_rawDescGZIP() []byte {
+	file_pricing_proto_rawDescOnce.Do(func() {
+		file_pricing_proto_rawDescData = protoimpl.X.CompressGZIP(file_pricing_proto_rawDescData)
+	})
+	return file_pricing_proto_rawDescData
+}
+
+var file_pricing_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_pricing_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_pricing_proto_goTypes = []interface{}{
+	(Currency)(0),            // 0: pricing.Currency
+	(*GetPriceRequest)(nil),  // 1: pricing.GetPriceRequest
+	(*CurrencyValue)(nil),    // 2: pricing.CurrencyValue
+	(*GetPriceResponse)(nil), // 3: pricing.GetPriceResponse
+}
 var file_pricing_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	2, // 0: pricing.GetPriceResponse.price:type_name -> pricing.CurrencyValue
+	0, // 1: pricing.GetPriceResponse.currency:type_name -> pricing.Currency
+	1, // 2: pricing.PricingService.GetPrice:input_type -> pricing.GetPriceRequest
+	3, // 3: pricing.PricingService.GetPrice:output_type -> pricing.GetPriceResponse
+	3, // [3:4] is the sub-list for method output_type
+	2, // [2:3] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_pricing_proto_init() }
@@ -41,18 +300,58 @@ func file_pricing_proto_init() {
 	if File_pricing_proto != nil {
 		return
 	}
+	if !protoimpl.UnsafeEnabled {
+		file_pricing_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetPriceRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_pricing_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CurrencyValue); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_pricing_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetPriceResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_pricing_proto_rawDesc,
-			NumEnums:      0,
-			NumMessages:   0,
+			NumEnums:      1,
+			NumMessages:   3,
 			NumExtensions: 0,
-			NumServices:   0,
+			NumServices:   1,
 		},
 		GoTypes:           file_pricing_proto_goTypes,
 		DependencyIndexes: file_pricing_proto_depIdxs,
+		EnumInfos:         file_pricing_proto_enumTypes,
+		MessageInfos:      file_pricing_proto_msgTypes,
 	}.Build()
 	File_pricing_proto = out.File
 	file_pricing_proto_rawDesc = nil
