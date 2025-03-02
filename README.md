@@ -1,4 +1,4 @@
-# housekeeper
+# Housekeeper
 
 This project is a microservices-based system for connecting housekeepers (cleaning service providers) with customers who require home cleaning services. When a customer posts a cleaning job on the system, the job is sent to a housekeeper.
 
