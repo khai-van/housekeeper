@@ -25,10 +25,10 @@ The system is built using a microservices architecture, consisting of the follow
 
 ### Prerequisites
 
-*   Go (version 1.21 or later)
+*   Go (version 1.22)
 *   Docker
 *   Docker Compose
-*  Protoc
+*   Protoc
 
 ### Installation
 
@@ -52,3 +52,29 @@ The system is built using a microservices architecture, consisting of the follow
 *   **Pricing Service:** gRPC on port 8081
 *   **Send Service:** gRPC on port 8082
 
+## Booking API
+
+### POST /booking
+
+**Description:**  
+Creates a new booking job. This endpoint accepts a job request with details about the cleaning job, validates the input, and then calls the internal service to create the job.
+
+---
+
+### Request
+
+- **Method:** `POST`
+- **URL:** `/booking`
+- **Content-Type:** `application/json`
+
+**Request Body Example:**
+
+```json
+{
+  "description": "Clean the house",
+  "customerId": "507f1f77bcf86cd799439011",
+  "address": "123 Main St, City, Country",
+  "startDate": 1682400000,
+  "requiredHour": 2,
+  "employeeIds": ["507f191e810c19729de860ea", "507f191e810c19729de860eb"]
+}
