@@ -30,7 +30,10 @@ func NewBookingService(
 }
 
 func (s *BookingService) CreateJob(ctx context.Context, req model.JobRequest) (*model.Job, error) {
-	// TODO: validate req
+	// validate request
+	if err := req.Validate(); err != nil {
+		return nil, fmt.Errorf("invalid request: %w", err)
+	}
 
 	// 1. Call Pricing Service
 	price, err := s.pricingSvc.GetPrice(ctx, uint64(req.StartDate), int32(req.RequiredHour))
